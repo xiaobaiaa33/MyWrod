@@ -1,29 +1,9 @@
 # my-world
 
-## Project setup
-```
-yarn install
-```
+## vue学习中(Vue3.0 + typeScript + Scss)
+- 布局
+- 列表信息
+    1. 首页
+    2. 进化世界
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
-
-### Compiles and minifies for production
-```
-yarn run build
-```
-
-### Run your tests
-```
-yarn run test
-```
-
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## 会继续进行有趣的学习，期待……
