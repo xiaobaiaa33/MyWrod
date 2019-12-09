@@ -11,9 +11,7 @@
             <el-menu-item index="/home">首页</el-menu-item>
             <el-submenu 
             index="2" 
-            popper-class="game"
-            show-timeout=100
-            hide-timeout=100>
+            popper-class="game">
                 <template slot="title">游戏</template>
                 <el-menu-item index="/home/game/evolution">进化世界</el-menu-item>
                 <el-menu-item index="/home/game/engorge">贪吃</el-menu-item>
@@ -34,9 +32,5 @@ export default class Header extends Vue {
 </script>
 
 <style lang="scss" scoped>
-    .game /deep/ .el-menu .el-submenu,.el-menu--popup {
-        min-width: auto ;
-        text-align: center;
-        width: 88px;
-    }
+
 </style>
