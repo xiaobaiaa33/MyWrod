@@ -17,6 +17,7 @@ import "@/assets/styles/global.scss";
 // 引入axios
 import axios from "axios"
 Vue.prototype.axios = axios;
+axios.defaults.withCredentials = true;
 
 new Vue({
   router,
