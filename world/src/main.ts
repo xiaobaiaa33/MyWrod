@@ -3,11 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-
 Vue.config.productionTip = false
 
 // 引入Element-ui
-import ElementUI from "element-ui";
+import ElementUI, { Form } from "element-ui";
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
@@ -15,9 +14,17 @@ Vue.use(ElementUI);
 import "@/assets/styles/global.scss";
 
 // 引入axios
-import axios from "axios"
-Vue.prototype.axios = axios;
-axios.defaults.withCredentials = true;
+import axios from "@/api/axios"
+import url from "@/api/getUrl"
+// 定义全局变量类型
+declare module 'vue/types/vue' {
+  interface Vue{
+    $axios:any,
+    $url:any
+  }
+}
+Vue.prototype.$axios = axios
+Vue.prototype.$url = url
 
 new Vue({
   router,

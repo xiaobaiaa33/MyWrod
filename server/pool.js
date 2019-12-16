@@ -7,5 +7,9 @@ const pool = mysql.createPool({
     connectionLimit:10,
     database:"world"
 })
+pool.getConnection((err)=>{
+    if (err) console.log("mysql数据库连接失败")
+    else console.log("mysql数据库连接成功")
+})
 
 module.exports = pool

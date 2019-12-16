@@ -26,33 +26,56 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator'
+interface Item {
+    readonly id:number,
+    type:string,
+    name:string,
+    img_url:string,
+    is_show:number
+}
 
 @Component({
 
 })
 export default class Evolution extends Vue {
-    tabPosition:string = "top"
+    // 变量类型
+    tabPosition:string //tab的位置
+    data:Item | undefined //元素数据
+    a:number
 
+    constructor(props:any){
+        super(props)
+        // 定义变量值
+        this.tabPosition = "top"
+        this.data = undefined
+        this.a = 10
+    }
+    
+    created() {
+        this.getData()
+    }
+    getData():void {
+        this.$axios.post(this.$url.getElement).then((res:any)=>{
+            console.log(res)
+            const arr:Item[] = res.data.data 
+        }).catch((err:{code:number,msg:string})=>{
+            this.$message.error(err.msg);
+        })
+    }
     // 开始拖动元素
     handleDragstart(e:any):void{
         let img:string = e.target.dataset.img
-        console.log("拖动开始")
-        console.log(e.dataTransfer.setData("imgUrl",img))
     }
     // 悬浮在目标上
-    handleDragover(e:any){
+    handleDragover(e:any):void{
         e.preventDefault();
-        console.log(e)
-        console.log("悬停")
     }
     // 在目标上放手
-    handleDrop(e:any){
+    handleDrop(e:any):void{
         e.preventDefault();
         let img:string = e.dataTransfer.getData("imgUrl")
         e.target.src = img
-        console.log(e)
-        console.log("放开")
     }
 }
 </script>
