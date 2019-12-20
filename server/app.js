@@ -1,4 +1,5 @@
 const express = require("express")
+const bodyParser = require("body-parser")
 const cors = require("cors")
 
 const EvolutionRouter = require("./router/Evolution")
@@ -14,6 +15,9 @@ app.use(cors({
     origin:["http://127.0.0.1:8088","http://localhost:8088"],
     credentials:true
 }))
+// 中间件
+app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.json())
 
 // 挂载路由
 app.use("/game",EvolutionRouter)

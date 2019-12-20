@@ -1,38 +1,53 @@
 <template>
     <div id="evolution">
         <el-tabs :tab-position="tabPosition" style="height: 200px;">
-            <el-tab-pane label="自然元素">
-                <el-button type="primary" round draggable="true" data-img="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1576143805360&di=65db1737bfac3d7e05590d11a6a65628&imgtype=0&src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F01%2F19%2F91%2F84570bf4c1066fe.jpg" @dragstart.native="handleDragstart($event)">火</el-button>
-                <el-button type="primary" round>水</el-button>
-                <el-button type="primary" round>土</el-button>
-                <el-button type="primary" round>气</el-button>
-            </el-tab-pane>
-            <el-tab-pane label="植物">植物</el-tab-pane>
-            <el-tab-pane label="海洋生物">海洋生物</el-tab-pane>
-            <el-tab-pane label="爬行动物和两栖动物">爬行动物和两栖动物</el-tab-pane>
-            <el-tab-pane label="昆虫">昆虫</el-tab-pane>
-            <el-tab-pane label="鸟类">鸟类</el-tab-pane>
-            <el-tab-pane label="哺乳动物">哺乳动物</el-tab-pane>
-            <el-tab-pane label="其他物种">其他物种</el-tab-pane>
+            <el-tab-pane 
+                v-for="(value,Index) in category"
+                :key="Index"
+                :label="value">
+                <el-button 
+                    draggable="true"
+                    type="primary" 
+                    round  
+                    @dragstart.native="handleDragstart($event)"
+                    v-for="(item,index) in data" 
+                    :key="index"
+                    :style="{display:`${item.type === value && item.isShow === 1 ? 'inline-block' : 'none'}`}"
+                    :data-img="item.imgUrl">
+                    {{ item.name }}
+                </el-button>
+            </el-tab-pane> 
         </el-tabs>
         <div class="compound">
-            <img class="magic"  src = "@/assets/images/magic.jpg"  alt = "元素1" @dragover="handleDragover" @drop="handleDrop">
+            <img class="magic"  
+                src = "@/assets/images/magic.jpg"  
+                alt = "元素1" 
+                data-name = "firstElement"
+                @dragover="handleDragover" @drop="handleDrop">
             <img class="symbol" src = "@/assets/images/plus.png" alt="加号">
-            <img class="magic" src = "@/assets/images/magic.jpg"  alt = "元素2">
+            <img class="magic" 
+                src = "@/assets/images/magic.jpg"  
+                alt = "元素2"
+                data-name = "secondElement"
+                @dragover="handleDragover" @drop="handleDrop">
             <img class="symbol" src = "@/assets/images/equal.png" alt="等于">
-            <img class="magic" src = "@/assets/images/compoundMagic.jpg"  alt = "合成元素">
+            <img class="magic" 
+                src = "@/assets/images/compoundMagic.jpg"  
+                alt = "合成元素"
+                @click="handleClickCompound">
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { createComponent,ref } from "@vue/composition-api"
 interface Item {
     readonly id:number,
     type:string,
     name:string,
-    img_url:string,
-    is_show:number
+    imgUrl:string,
+    isShow:number
 }
 
 @Component({
@@ -41,41 +56,78 @@ interface Item {
 export default class Evolution extends Vue {
     // 变量类型
     tabPosition:string //tab的位置
-    data:Item | undefined //元素数据
-    a:number
+    data:Item[] //元素数据
+    category:string[] //类别
+    elementList:string[] //待合成元素列表
 
     constructor(props:any){
         super(props)
         // 定义变量值
         this.tabPosition = "top"
-        this.data = undefined
-        this.a = 10
+        this.data = []
+        this.category = ["自然元素","植物","海洋生物","爬行动物和两栖动物","昆虫","鸟类","哺乳动物","其他物种"]
+        this.elementList = ["",""]
     }
     
-    created() {
+    created():void {
         this.getData()
     }
+    // 获取元素
     getData():void {
         this.$axios.post(this.$url.getElement).then((res:any)=>{
             console.log(res)
-            const arr:Item[] = res.data.data 
-        }).catch((err:{code:number,msg:string})=>{
+            const arr:Item[] = res.data
+            this.data = arr
+        }).catch((err:any)=>{
             this.$message.error(err.msg);
         })
     }
     // 开始拖动元素
-    handleDragstart(e:any):void{
-        let img:string = e.target.dataset.img
+    handleDragstart(e:any):void {
+        const img:string = e.target.dataset.img
+        const name:string = e.target.firstElementChild.innerHTML
+        e.dataTransfer.setData("imgUrl",img)
+        e.dataTransfer.setData("name",name)
     }
     // 悬浮在目标上
-    handleDragover(e:any):void{
+    handleDragover(e:any):void {
         e.preventDefault();
+        // const img:string = e.dataTransfer.getData("imgUrl")
+        // e.target.src = img
     }
     // 在目标上放手
-    handleDrop(e:any):void{
+    handleDrop(e:any):void {
         e.preventDefault();
-        let img:string = e.dataTransfer.getData("imgUrl")
+        const img:string = e.dataTransfer.getData("imgUrl")
+        const name:string = e.dataTransfer.getData("name")
+        console.log(name)
+        if (e.target.dataset.name === "firstElement") 
+            this.elementList[0] = name
+        else 
+            this.elementList[1] = name
+        console.log(this.elementList)
         e.target.src = img
+    }
+    // 合成
+    handleClickCompound():void {
+        if (this.elementList[0] === "" || this.elementList[1] === ""){
+            this.$message.error("需要两个元素来合成")
+            return
+        }
+        interface Params {
+            first:string,
+            second:string
+        }
+        let params:Params = {
+            first:this.elementList[0],
+            second:this.elementList[1]
+        }
+        this.$axios.post(this.$url.compoundElement, params).then((res:any)=>{
+            console.log(res)
+            if (res.code === 400) this.$message.error(res.msg)
+        }).catch((err:any)=>{
+            this.$message.error(err.msg);
+        })
     }
 }
 </script>
@@ -93,6 +145,7 @@ export default class Evolution extends Vue {
         }
         .magic {
             width: 300px;
+            height: 300px;
             &:last-child {
                 cursor: pointer;
             }

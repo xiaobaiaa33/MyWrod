@@ -18,6 +18,7 @@ INSERT INTO element VALUES(NULL,"自然元素","土","",1);
 INSERT INTO element VALUES(NULL,"自然元素","气","",1);
 INSERT INTO element VALUES(NULL,"自然元素","雾","",0);
 INSERT INTO element VALUES(NULL,"自然元素","闪电","",0);
+INSERT INTO element VALUES(NULL,"植物","花","",0);
 
 -- 合成表
 CREATE TABLE compound (
