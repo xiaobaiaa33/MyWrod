@@ -13,9 +13,7 @@
                     v-for="(item,index) in data" 
                     :key="index"
                     :style="{display:`${item.type === value && item.isShow === 1 ? 'inline-block' : 'none'}`}"
-                    :data-img="item.imgUrl">
-                    {{ item.name }}
-                </el-button>
+                    :data-img="item.imgUrl">{{item.name}}</el-button>
             </el-tab-pane> 
         </el-tabs>
         <div class="compound">
@@ -75,9 +73,9 @@ export default class Evolution extends Vue {
     // 获取元素
     getData():void {
         this.$axios.post(this.$url.getElement).then((res:any)=>{
-            console.log(res)
             const arr:Item[] = res.data
             this.data = arr
+            console.log(arr)
         }).catch((err:any)=>{
             this.$message.error(err.msg);
         })
@@ -85,7 +83,7 @@ export default class Evolution extends Vue {
     // 开始拖动元素
     handleDragstart(e:any):void {
         const img:string = e.target.dataset.img
-        const name:string = e.target.firstElementChild.innerHTML
+        const name:string = e.target.firstElementChild.innerText
         e.dataTransfer.setData("imgUrl",img)
         e.dataTransfer.setData("name",name)
     }
@@ -100,12 +98,10 @@ export default class Evolution extends Vue {
         e.preventDefault();
         const img:string = e.dataTransfer.getData("imgUrl")
         const name:string = e.dataTransfer.getData("name")
-        console.log(name)
         if (e.target.dataset.name === "firstElement") 
             this.elementList[0] = name
         else 
             this.elementList[1] = name
-        console.log(this.elementList)
         e.target.src = img
     }
     // 合成
@@ -124,7 +120,11 @@ export default class Evolution extends Vue {
         }
         this.$axios.post(this.$url.compoundElement, params).then((res:any)=>{
             console.log(res)
-            if (res.code === 400) this.$message.error(res.msg)
+            if (res.code === 200){
+                this.getData()
+                this.$message.success(res.msg)
+            }
+            else this.$message.error(res.msg)
         }).catch((err:any)=>{
             this.$message.error(err.msg);
         })
