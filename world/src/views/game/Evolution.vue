@@ -63,7 +63,7 @@ export default class Evolution extends Vue {
         // 定义变量值
         this.tabPosition = "top"
         this.data = []
-        this.category = ["自然元素","植物","海洋生物","爬行动物和两栖动物","昆虫","鸟类","哺乳动物","其他物种"]
+        this.category = ["基本元素","植物","海洋生物","爬行动物或两栖动物","昆虫","鸟类","哺乳动物","其他物种"]
         this.elementList = ["",""]
     }
     
