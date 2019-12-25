@@ -5,5 +5,6 @@ axios.defaults.baseURL = url
 
 export default {
     getElement:url + "/game/getElement",
-    compoundElement:url + "/game/compoundElement"
+    compoundElement:url + "/game/compoundElement",
+    reset: url + "/game/reset",
 }

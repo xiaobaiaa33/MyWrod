@@ -31,22 +31,19 @@ router.post("/compoundElement", (req, res) => {
             else
                 resolve({ data: result[0], result: res })
         })
+        // 判断元素是否已经显示
     }).then(value => {
         return new Promise(resolve => {
-            // 判断元素是否已经显示
             const { composition } = value.data
-            console.log(composition)
             sql = "SELECT is_show FROM element WHERE name = ?"
             pool.query(sql, [composition], (err, res) => {
                 if (err) throw err
-                console.log(res[0].is_show)
                 if (res[0].is_show === 1)
                     resolve({ ...value, is: false })
                 else
                     resolve({ ...value, is: true })
             })
         })
-
         // 显示新元素
     }).then(value => {
         const { is, result } = value
@@ -60,6 +57,21 @@ router.post("/compoundElement", (req, res) => {
             })
         } else
             result.send({ code: 200, msg: "此元素已经存在" })
+    })
+})
+
+// 重置游戏
+router.post("/reset", (req, res) => {
+    const sql = "UPDATE element SET is_show = 0 WHERE name NOT IN (?,?,?,?,?,?,?)"
+    const params = ["气","泥土","火","水","轮子","颜料","布袋"]
+    pool.query(sql, params,(err, result) => {
+        if (err) throw err
+        if (result.affectedRows > 0)
+            res.send({ code: 200, msg: "重置游戏" })
+        else {
+            res.send({ code: 400, msg: "重置失败" })
+            return
+        }
     })
 })
 
