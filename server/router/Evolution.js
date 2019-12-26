@@ -63,8 +63,8 @@ router.post("/compoundElement", (req, res) => {
 // 重置游戏
 router.post("/reset", (req, res) => {
     const sql = "UPDATE element SET is_show = 0 WHERE name NOT IN (?,?,?,?,?,?,?)"
-    const params = ["气","泥土","火","水","木轮","颜料","布袋"]
-    pool.query(sql, params,(err, result) => {
+    const params = ["气", "泥土", "火", "水", "木轮", "颜料", "布袋"]
+    pool.query(sql, params, (err, result) => {
         if (err) throw err
         if (result.affectedRows > 0)
             res.send({ code: 200, msg: "重置游戏" })

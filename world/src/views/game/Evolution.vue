@@ -56,8 +56,12 @@ interface Item {
   imgUrl: string;
   isShow: number;
 }
+interface Result {
+  code: number;
+  msg: string;
+} 
 
-@Component({})
+@Component({}) 
 export default class Evolution extends Vue {
   // 变量类型
   tabPosition: string; //tab的位置
@@ -90,24 +94,22 @@ export default class Evolution extends Vue {
   getData(): void {
     this.$axios
       .post(this.$url.getElement)
-      .then(res => {
+      .then((res: any) => {
         const arr: Item[] = res.data;
         this.data = arr;
       })
-      .catch(err =>  this.$message.error(err.msg)
-    );
+      .catch((err:Result) => this.$message.error(err.msg));
   }
   // 重置按钮
   handleClickReset(): void {
     this.$axios
       .post(this.$url.reset)
-      .then(res => {
-          const { code,msg } = res
-          this.$message.success(msg)
-          this.getData()
+      .then((res: Result) => {
+        const { code, msg } = res;
+        this.$message.success(msg);
+        this.getData();
       })
-      .catch(err => this.$message.error(err.msg)
-    );
+      .catch((err: Result) => this.$message.error(err.msg));
   }
   // 开始拖动元素
   handleDragstart(e: any): void {
@@ -147,13 +149,13 @@ export default class Evolution extends Vue {
     };
     this.$axios
       .post(this.$url.compoundElement, params)
-      .then((res: any) => {
+      .then((res: Result) => {
         if (res.code === 200) {
           this.getData();
           this.$message.success(res.msg);
         } else this.$message.error(res.msg);
       })
-      .catch((err: any) => {
+      .catch((err: Result) => {
         this.$message.error(err.msg);
       });
   }
