@@ -56,12 +56,8 @@ interface Item {
   imgUrl: string;
   isShow: number;
 }
-interface Result {
-  code: number;
-  msg: string;
-} 
 
-@Component({}) 
+@Component({})
 export default class Evolution extends Vue {
   // 变量类型
   tabPosition: string; //tab的位置
@@ -69,7 +65,7 @@ export default class Evolution extends Vue {
   category: string[]; //类别
   elementList: string[]; //待合成元素列表
 
-  constructor(props: any) {
+  constructor(props) {
     super(props);
     // 定义变量值
     this.tabPosition = "top";
@@ -98,18 +94,20 @@ export default class Evolution extends Vue {
         const arr: Item[] = res.data;
         this.data = arr;
       })
-      .catch((err:Result) => this.$message.error(err.msg));
+      .catch((err: any) => this.$message.error(err.msg));
   }
   // 重置按钮
   handleClickReset(): void {
     this.$axios
       .post(this.$url.reset)
-      .then((res: Result) => {
+      .then((res: any) => {
         const { code, msg } = res;
-        this.$message.success(msg);
-        this.getData();
+        if (code === 200) {
+          this.$message.success(msg);
+          this.getData();
+        } else this.$message.error(msg);
       })
-      .catch((err: Result) => this.$message.error(err.msg));
+      .catch((err: any) => this.$message.error(err.msg));
   }
   // 开始拖动元素
   handleDragstart(e: any): void {
@@ -134,7 +132,7 @@ export default class Evolution extends Vue {
     e.target.src = img;
   }
   // 合成
-  handleClickCompound(): void {
+  handleClickCompound(e:any): void {
     if (this.elementList[0] === "" || this.elementList[1] === "") {
       this.$message.error("需要两个元素来合成");
       return;
@@ -149,13 +147,16 @@ export default class Evolution extends Vue {
     };
     this.$axios
       .post(this.$url.compoundElement, params)
-      .then((res: Result) => {
-        if (res.code === 200) {
+      .then((res: any) => {
+        const { code, msg, data } = res;
+        if (code === 200) {
           this.getData();
-          this.$message.success(res.msg);
-        } else this.$message.error(res.msg);
+          e.target.src = data.imgUrl
+          this.$message.success(msg);
+        } else if (res.code === 202) this.$message.warning(msg);
+        else this.$message.error(msg);
       })
-      .catch((err: Result) => {
+      .catch((err: any) => {
         this.$message.error(err.msg);
       });
   }

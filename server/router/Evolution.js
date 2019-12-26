@@ -13,50 +13,57 @@ router.post("/getElement", (req, res) => {
 
 // 合成元素
 router.post("/compoundElement", (req, res) => {
-    let sql
     new Promise(resolve => {
         const length = Object.keys(req.body).length
         if (!req.body | length <= 0) res.send({ code: 400, msg: "参数错误" });
         const { first, second } = req.body
-        sql = "SELECT composition FROM compound WHERE (first_element = ? OR first_element = ?) AND (second_element = ? OR second_element = ?)"
+        const sql = "SELECT composition FROM compound WHERE (first_element = ? OR first_element = ?) AND (second_element = ? OR second_element = ?)"
         const params = [first, second, first, second]
         pool.query(sql, params, (error, result) => {
             if (error) throw error
             // 没有合成公式
             if (result.length === 0) {
                 res.send({ code: 201, msg: "无法合成新元素" })
-                return
             }
             // 有合成公式，判断是否已经存显示
             else
-                resolve({ data: result[0], result: res })
+                resolve({ data: result[0] })
         })
         // 判断元素是否已经显示
     }).then(value => {
         return new Promise(resolve => {
             const { composition } = value.data
-            sql = "SELECT is_show FROM element WHERE name = ?"
-            pool.query(sql, [composition], (err, res) => {
+            const sql = "SELECT is_show FROM element WHERE name = ?"
+            pool.query(sql, [composition], (err, result) => {
                 if (err) throw err
-                if (res[0].is_show === 1)
-                    resolve({ ...value, is: false })
+                if (result[0].is_show === 1)
+                    res.send({ code: 202, msg: "此元素已经存在" })
                 else
-                    resolve({ ...value, is: true })
+                    resolve({ ...value })
             })
         })
         // 显示新元素
     }).then(value => {
-        const { is, result } = value
-        const { composition } = value.data
-        if (is) {
+        return new Promise(resolve => {
+            const { composition } = value.data
             // 显示
-            sql = "UPDATE element SET is_show = 1 WHERE name = ?"
-            pool.query(sql, [composition], (err, res) => {
+            const sql = "UPDATE element SET is_show = 1 WHERE name = ?"
+            pool.query(sql, [composition], (err, result) => {
                 if (err) throw err
-                result.send({ code: 200, msg: `创造了新元素${composition}` })
+                if (result.affectedRows > 0)
+                    resolve({ ...value })
+                else
+                    res.send({ code: 201, msg: "有新元素，但是创建失败了" })
             })
-        } else
-            result.send({ code: 200, msg: "此元素已经存在" })
+        })
+        // 查询新元素的图片
+    }).then(value => {
+        const { composition } = value.data
+        const sql = "SELECT img_url as imgUrl FROM element WHERE name = ?"
+        pool.query(sql, [composition], (err, result) => {
+            if (err) throw err
+            res.send({ code: 200, msg: `创造了新元素${composition}`, data: result[0] })
+        })
     })
 })
 
@@ -69,7 +76,7 @@ router.post("/reset", (req, res) => {
         if (result.affectedRows > 0)
             res.send({ code: 200, msg: "重置游戏" })
         else {
-            res.send({ code: 400, msg: "重置失败" })
+            res.send({ code: 201, msg: "重置失败" })
         }
     })
 })
