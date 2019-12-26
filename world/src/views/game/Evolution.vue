@@ -102,10 +102,7 @@ export default class Evolution extends Vue {
     this.$axios
       .post(this.$url.reset)
       .then(res => {
-          const { code,msg } = res.data
-          if (code === 200){
-
-          }
+          const { code,msg } = res
           this.$message.success(msg)
           this.getData()
       })

@@ -221,7 +221,6 @@ INSERT INTO compound VALUES(NULL,"黏土","火","砖块");
 INSERT INTO compound VALUES(NULL,"气","树","长笛");
 INSERT INTO compound VALUES(NULL,"木轮","黏土","陶罐");
 INSERT INTO compound VALUES(NULL,"沙漏","木齿铁轮","时钟");
--- 哺乳动物
 INSERT INTO compound VALUES(NULL,"泥土","蜥蜴","哺乳动物");
 INSERT INTO compound VALUES(NULL,"树","哺乳动物","黑猩猩");
 INSERT INTO compound VALUES(NULL,"泥土","哺乳动物","地鼠");
