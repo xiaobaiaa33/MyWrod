@@ -15,6 +15,7 @@
                 <template slot="title">游戏</template>
                 <el-menu-item index="/home/game/evolution">进化世界</el-menu-item>
                 <el-menu-item index="/home/game/engorge">贪吃</el-menu-item>
+                <el-menu-item index="/home/log">日志</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

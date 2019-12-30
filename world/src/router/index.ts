@@ -25,6 +25,7 @@ const routes = [
         name: 'home',
         component: ()=>import("@/views/home/Home.vue"),
       },
+      // 游戏类
       {
         path: '/home/game/evolution',
         name: 'evolution',
@@ -34,7 +35,13 @@ const routes = [
         path: '/home/game/engorge',
         name: 'engorge',
         component: ()=>import("@/views/game/Engorge.vue"),
-      }
+      },
+      // 日志
+      {
+        path: '/home/log',
+        name: 'log',
+        component: ()=>import("@/views/log/Log.vue"),
+      },
     ]
   },
 ]
