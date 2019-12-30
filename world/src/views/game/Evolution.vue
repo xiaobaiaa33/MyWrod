@@ -65,8 +65,8 @@ export default class Evolution extends Vue {
   category: string[]; //类别
   elementList: string[]; //待合成元素列表
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     // 定义变量值
     this.tabPosition = "top";
     this.data = [];
