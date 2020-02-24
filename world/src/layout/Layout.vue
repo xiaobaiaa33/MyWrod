@@ -35,6 +35,9 @@ export default class Layout extends Vue {
         background: #545c64;
     }
     .el-footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         font-size: 20px;
         padding: 8px 20px;
         color:#ddd;
