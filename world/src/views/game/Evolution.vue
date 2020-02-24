@@ -48,7 +48,6 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { createComponent, ref } from "@vue/composition-api";
 interface Item {
   readonly id: number;
   type: string;
