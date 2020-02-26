@@ -1,11 +1,11 @@
 <template>
 	<div id="log">
-		<p>这是日志</p>
 		<el-timeline :reverse="reverse">
 			<el-timeline-item
 				v-for="(activity, index) in activities"
 				:key="index"
 				:timestamp="activity.timestamp"
+				:type="activity.type"
 			>{{activity.content}}</el-timeline-item>
 		</el-timeline>
 		<el-backtop target=".el-timeline"></el-backtop>
@@ -15,6 +15,7 @@
 <script lang="ts">
 	import { Component, Vue } from "vue-property-decorator";
 	interface LogContent {
+		type?: string;
 		content: string;
 		timestamp: string;
 	}
@@ -61,6 +62,7 @@
 					timestamp: "2019-11-12"
 				}
 			];
+			this.activities[0].type = "success";
 		}
 	}
 </script>

@@ -24,7 +24,7 @@
 	}
 	import { Component, Vue } from "vue-property-decorator";
 
-	@Component({})
+	@Component
 	export default class Login extends Vue {
 		form: Form = {
 			user: "admin",

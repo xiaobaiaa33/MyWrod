@@ -39,6 +39,19 @@ const routes = [
         meta:{ requireAuth: true },
         component: ()=>import("@/views/game/Engorge.vue"),
       },
+      // 娱乐类
+      {
+        path: '/home/recreation/video',
+        name: 'video',
+        meta:{ requireAuth: true },
+        component: ()=>import("@/views/recreation/Video.vue"),
+      },
+      {
+        path: '/home/recreation/music',
+        name: 'music',
+        meta:{ requireAuth: true },
+        component: ()=>import("@/views/recreation/Music.vue"),
+      },
       // 日志
       {
         path: '/home/log',
