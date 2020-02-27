@@ -42,9 +42,18 @@
 		</div>
 		<!-- 卡片组 -->
 		<div class="cards">
-			<el-card class="box-card" v-for="(item,index) in data" :key="index">
+			<el-card
+				class="box-card"
+				v-for="(item,index) in data"
+				:key="index"
+				shadow="hover"
+				:style="getCardColor(item.sex)"
+			>
 				<div slot="header" class="clearfix">
 					<span>{{item.title}}</span>
+					<el-button style="color:#f56c6c" type="text" @click="handleDelCard(item.id)">删除</el-button>
+					<el-button type="text">修改</el-button>
+					<el-button style="color:#67c23a" type="text">使用</el-button>
 				</div>
 				<div>{{item.value}}</div>
 			</el-card>
@@ -96,40 +105,7 @@
 			];
 			this.sex = "2";
 			this.type = "0";
-			this.data = [
-				{
-					title: "卡片1",
-					value: "1111"
-				},
-				{
-					title: "卡片2",
-					value: "2222"
-				},
-				{
-					title: "卡片1",
-					value: "1111"
-				},
-				{
-					title: "卡片2",
-					value: "2222"
-				},
-				{
-					title: "卡片1",
-					value: "1111"
-				},
-				{
-					title: "卡片2",
-					value: "2222"
-				},
-				{
-					title: "卡片1",
-					value: "1111"
-				},
-				{
-					title: "卡片2",
-					value: "2222"
-				}
-			];
+			this.data = [];
 			this.dialogVisible = false;
 			this.input = {
 				title: "",
@@ -151,6 +127,21 @@
 				]
 			};
 		}
+
+		created(): void {
+			this.getCard();
+		}
+		// 获取所有卡片
+		getCard(): void {
+			this.$axios
+				.post(this.$url.getCards)
+				.then((res: any) => {
+					this.data = res.data;
+				})
+				.catch(() => {
+					this.$message.error("获取卡片失败");
+				});
+		}
 		// 筛选切换性别
 		handleChangeSex(): void {
 			console.log(this.sex);
@@ -159,9 +150,19 @@
 		handleClickNewCard(): void {
 			this.dialogVisible = true;
 		}
+		// 获取卡片颜色
+		getCardColor(sex: number): string {
+			switch (sex) {
+				case 2:
+					return "background:#fff";
+				case 1:
+					return "background:#409eff1a";
+				default:
+					return "background:#f56c6c1a";
+			}
+		}
 		// 创建卡片完成
 		handleClickCardOk(): void {
-			console.log(this.input);
 			if (!this.input.title) {
 				this.$message.error("请填写卡片名称");
 				return;
@@ -170,7 +171,42 @@
 				this.$message.error("请填写卡片作用");
 				return;
 			}
+			const params = {
+				title: this.input.title,
+				value: this.input.value,
+				sex: this.input.sex
+			};
+			this.$axios
+				.post(this.$url.addCard, params)
+				.then((res: any) => {
+					this.$message.success(res.msg);
+					this.input.title = "";
+					this.input.value = "";
+					this.input.sex = "2";
+				})
+				.catch(() => {
+					this.$message.error("创建卡片失败")
+				});
 			this.dialogVisible = false;
+			this.getCard();
+		}
+		// 修改卡片
+		handleSetCard(): void {
+			console.log("修改卡片");
+		}
+		// 删除卡片
+		handleDelCard(id: number): void {
+			console.log(id);
+			this.$axios
+				.post(this.$url.delCard,{id})
+				.then((res: any) => {
+					this.$message.success(res.msg)
+                    this.getCard();
+				})
+				.catch(() => {
+					this.$message.error("删除卡片失败")
+				});
+			console.log("删除卡片");
 		}
 	}
 </script>
@@ -200,6 +236,13 @@
 			.el-card {
 				width: 15%;
 				margin: 0 20px 20px 0;
+				.clearfix {
+					.el-button {
+						float: right;
+						padding: 2px 4px;
+						margin: 0;
+					}
+				}
 			}
 		}
 	}

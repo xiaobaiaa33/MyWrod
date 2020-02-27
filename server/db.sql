@@ -260,3 +260,20 @@ INSERT INTO compound VALUES(NULL,"跳鼠","布袋","袋鼠");
 INSERT INTO compound VALUES(NULL,"地鼠","布袋","负鼠");
 INSERT INTO compound VALUES(NULL,"麝鼠","布袋","袋熊");
 INSERT INTO compound VALUES(NULL,"老鼠","布袋","袋獾");
+
+-- 卡片表
+CREATE TABLE card (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(32),
+    value VARCHAR(128),
+    sex TINYINT
+);
+
+INSERT INTO card VALUES(NULL,"卡片1","1111",1);
+INSERT INTO card VALUES(NULL,"卡片2","222",0);
+INSERT INTO card VALUES(NULL,"卡片3","1331",1);
+INSERT INTO card VALUES(NULL,"卡片4","4411",0);
+INSERT INTO card VALUES(NULL,"卡片5","15511",0);
+INSERT INTO card VALUES(NULL,"卡片6","661",2);
+INSERT INTO card VALUES(NULL,"卡片7","77711",2);
+INSERT INTO card VALUES(NULL,"卡片8","11881",2);
