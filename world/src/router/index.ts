@@ -52,6 +52,19 @@ const routes = [
         meta:{ requireAuth: true },
         component: ()=>import("@/views/recreation/Music.vue"),
       },
+      {
+        path: '/home/recreation/order',
+        name: 'order',
+        meta:{ requireAuth: true },
+        component: ()=>import("@/views/recreation/Order.vue"),
+      },
+      // 创意类
+      {
+        path: '/home/creativity/card',
+        name: 'card',
+        meta:{ requireAuth: true },
+        component: ()=>import("@/views/creativity/Card.vue"),
+      },
       // 日志
       {
         path: '/home/log',

@@ -49,11 +49,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 interface Item {
-  readonly id: number;
-  type: string;
-  name: string;
-  imgUrl: string;
-  isShow: number;
+  readonly id: number
+  type: string
+  name: string
+  imgUrl: string
+  isShow: number
 }
 
 @Component({})

@@ -1,6 +1,6 @@
 <template>
-    <div id="video">
-        视频
+    <div id="order">
+        点餐
     </div>
 </template>
 
@@ -10,11 +10,11 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component({
 
 })
-export default class Video extends Vue {
+export default class Order extends Vue {
     
 }
 </script>
 
 <style lang="scss" scoped>
-
+    
 </style>

@@ -22,6 +22,13 @@
                 <template slot="title">娱乐</template>
                 <el-menu-item index="/home/recreation/video">视频播放</el-menu-item>
                 <el-menu-item index="/home/recreation/music">音乐播放</el-menu-item>
+                <el-menu-item index="/home/recreation/order">点餐</el-menu-item>
+            </el-submenu>
+            <el-submenu 
+            index="4" 
+            popper-class="creativity">
+                <template slot="title">创意</template>
+                <el-menu-item index="/home/creativity/card">卡片</el-menu-item>
             </el-submenu>
             <el-menu-item index="/home/log">日志</el-menu-item>
         </el-menu>
