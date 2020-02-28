@@ -12,4 +12,4 @@ pool.getConnection((err)=>{
     else console.log("mysql数据库连接成功")
 })
 
-module.exports = pool
+module.exports = pool;

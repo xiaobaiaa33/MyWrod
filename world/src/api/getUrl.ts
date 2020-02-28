@@ -13,4 +13,5 @@ export default {
     getCards:url + "/creativity/getCards",//获取所有卡片
     addCard:url + "/creativity/addCard",//添加卡片
     delCard:url + "/creativity/delCard",//删除卡片
+    setCard:url + "/creativity/setCard",//修改卡片
 }

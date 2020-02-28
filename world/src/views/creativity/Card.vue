@@ -2,16 +2,20 @@
 	<div id="card">
 		<!-- 筛选条件 -->
 		<div class="condition">
-			<el-button type="primary" @click="handleClickNewCard">创建卡片</el-button>
-			<el-select v-model="sex" style="width:100px" @change="handleChangeSex">
+			<el-button type="primary" @click="dialogVisible = true;dialogTitle='新建卡片'">创建卡片</el-button>
+			<el-select v-model="sex" style="width:100px" @change="getCard(Number(sex),Number(use))">
 				<el-option v-for="item in sexOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
 			</el-select>
-			<!-- 弹窗 -->
+			<el-select v-model="use" style="width:100px" @change="getCard(Number(sex),Number(use))">
+				<el-option v-for="item in useOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+			</el-select>
+			<!--弹窗 -->
 			<el-dialog
-				title="新建卡片"
+				:title="dialogTitle"
 				:visible.sync="dialogVisible"
 				width="500px"
-				@click="dialogVisible = false"
+				:show-close="false"
+				:close-on-click-modal="false"
 			>
 				<div>
 					<p>
@@ -35,7 +39,7 @@
 					</p>
 				</div>
 				<span slot="footer" class="dialog-footer">
-					<el-button @click="dialogVisible = false">取 消</el-button>
+					<el-button @click="dialogVisible = false;clear()">取 消</el-button>
 					<el-button type="primary" @click="handleClickCardOk">确 定</el-button>
 				</span>
 			</el-dialog>
@@ -52,7 +56,7 @@
 				<div slot="header" class="clearfix">
 					<span>{{item.title}}</span>
 					<el-button style="color:#f56c6c" type="text" @click="handleDelCard(item.id)">删除</el-button>
-					<el-button type="text">修改</el-button>
+					<el-button type="text" @click="handleSetCard(item)">修改</el-button>
 					<el-button style="color:#67c23a" type="text">使用</el-button>
 				</div>
 				<div>{{item.value}}</div>
@@ -73,6 +77,7 @@
 		value: string;
 	}
 	interface Input {
+		id?: number;
 		title: string;
 		value: string;
 		sex: string;
@@ -80,18 +85,20 @@
 	}
 	@Component({})
 	export default class Card extends Vue {
-		sexOptions: Option[];
-		sex: string;
-		type: string;
-		data: Data[];
-		dialogVisible: Boolean;
-		input: Input;
+		sexOptions: Option[]; //性别筛选下拉框
+		useOptions: Option[]; //使用情况筛选下拉框
+		sex: string; //性别类型 0全部 1男 2女
+		use: string; //使用情况 0未使用 1已使用
+		data: Data[]; //卡片数据
+		dialogVisible: Boolean; //弹窗是显示
+		input: Input; //弹窗内容
+		dialogTitle: string; //弹窗标题
 
 		constructor() {
 			super();
 			this.sexOptions = [
 				{
-					value: "2",
+					value: "0",
 					label: "全部"
 				},
 				{
@@ -99,21 +106,35 @@
 					label: "男"
 				},
 				{
-					value: "0",
+					value: "2",
 					label: "女"
+				},
+				{
+					value: "3",
+					label: "中立"
 				}
 			];
-			this.sex = "2";
-			this.type = "0";
+			this.useOptions = [
+				{
+					value: "0",
+					label: "未使用"
+				},
+				{
+					value: "1",
+					label: "已使用"
+				}
+			];
+			this.sex = "0";
+			this.use = "0";
 			this.data = [];
 			this.dialogVisible = false;
 			this.input = {
 				title: "",
 				value: "",
-				sex: "2",
+				sex: "0",
 				options: [
 					{
-						value: "2",
+						value: "0",
 						label: "全部"
 					},
 					{
@@ -121,20 +142,26 @@
 						label: "男"
 					},
 					{
-						value: "0",
+						value: "2",
 						label: "女"
-					}
+					},
+					{
+						value: "3",
+						label: "中立"
+					},
 				]
 			};
+			this.dialogTitle = "";
 		}
 
 		created(): void {
 			this.getCard();
 		}
 		// 获取所有卡片
-		getCard(): void {
+		getCard(sex: number = 0, use: number = 0): void {
+			console.log(sex,use)
 			this.$axios
-				.post(this.$url.getCards)
+				.post(this.$url.getCards, { sex,employ:use })
 				.then((res: any) => {
 					this.data = res.data;
 				})
@@ -142,26 +169,18 @@
 					this.$message.error("获取卡片失败");
 				});
 		}
-		// 筛选切换性别
-		handleChangeSex(): void {
-			console.log(this.sex);
-		}
-		// 创建卡片
-		handleClickNewCard(): void {
-			this.dialogVisible = true;
-		}
 		// 获取卡片颜色
 		getCardColor(sex: number): string {
 			switch (sex) {
-				case 2:
-					return "background:#fff";
 				case 1:
 					return "background:#409eff1a";
-				default:
+				case 2:
 					return "background:#f56c6c1a";
+				default:
+					return "background:#fff";
 			}
 		}
-		// 创建卡片完成
+		// 弹窗完成按钮
 		handleClickCardOk(): void {
 			if (!this.input.title) {
 				this.$message.error("请填写卡片名称");
@@ -171,42 +190,54 @@
 				this.$message.error("请填写卡片作用");
 				return;
 			}
+			const is: boolean = this.dialogTitle === "新建卡片";
+			const router: string = is ? this.$url.addCard : this.$url.setCard;
 			const params = {
+				id: this.input.id,
 				title: this.input.title,
 				value: this.input.value,
 				sex: this.input.sex
 			};
+			if (is) delete params.id;
 			this.$axios
-				.post(this.$url.addCard, params)
+				.post(router, params)
 				.then((res: any) => {
 					this.$message.success(res.msg);
-					this.input.title = "";
-					this.input.value = "";
-					this.input.sex = "2";
+					if (this.dialogTitle === "新建卡片") this.clear();
 				})
-				.catch(() => {
-					this.$message.error("创建卡片失败")
+				.catch((err: any) => {
+					this.$message.error(`${err.msg}`);
 				});
 			this.dialogVisible = false;
 			this.getCard();
 		}
 		// 修改卡片
-		handleSetCard(): void {
-			console.log("修改卡片");
+		handleSetCard(item: Input): void {
+			const { id, title, value, sex } = item;
+			this.dialogVisible = true;
+			this.dialogTitle = "修改卡片";
+			this.input.title = title;
+			this.input.value = value;
+			this.input.sex = String(sex);
+			this.input.id = id;
 		}
 		// 删除卡片
 		handleDelCard(id: number): void {
-			console.log(id);
 			this.$axios
-				.post(this.$url.delCard,{id})
+				.post(this.$url.delCard, { id })
 				.then((res: any) => {
-					this.$message.success(res.msg)
-                    this.getCard();
+					this.$message.success(res.msg);
+					this.getCard();
 				})
 				.catch(() => {
-					this.$message.error("删除卡片失败")
+					this.$message.error("删除卡片失败");
 				});
-			console.log("删除卡片");
+		}
+		// 清除数据
+		clear(): void {
+			this.input.title = "";
+			this.input.value = "";
+			this.input.sex = "0";
 		}
 	}
 </script>
@@ -215,8 +246,8 @@
 	#card {
 		text-align: left;
 		.condition {
-			.el-button {
-				margin-right: 20px;
+			.el-select {
+				margin-left: 20px;
 			}
 			.el-dialog {
 				.el-input {
