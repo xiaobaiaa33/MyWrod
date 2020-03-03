@@ -65,6 +65,7 @@
 					>使用</el-button>
 				</div>
 				<div>{{item.value}}</div>
+				<el-tag :class="[item.employ ? 'show' : 'hide']" type="info">已使用</el-tag>
 			</el-card>
 		</div>
 	</div>
@@ -294,6 +295,10 @@
 						margin: 0;
 					}
 				}
+			}
+			.el-tag {
+				float: right;
+				margin-bottom: 10px;
 			}
 		}
 		// 是否显示按钮
