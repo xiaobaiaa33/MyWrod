@@ -14,4 +14,7 @@ export default {
     addCard:url + "/creativity/addCard",//添加卡片
     delCard:url + "/creativity/delCard",//删除卡片
     setCard:url + "/creativity/setCard",//修改卡片
+    useCard:url + "/creativity/useCard",//使用卡片
+
+    // 点餐
 }

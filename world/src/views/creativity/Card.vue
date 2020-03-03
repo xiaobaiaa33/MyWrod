@@ -56,8 +56,13 @@
 				<div slot="header" class="clearfix">
 					<span>{{item.title}}</span>
 					<el-button style="color:#f56c6c" type="text" @click="handleDelCard(item.id)">删除</el-button>
-					<el-button type="text" @click="handleSetCard(item)">修改</el-button>
-					<el-button style="color:#67c23a" type="text">使用</el-button>
+					<el-button type="text" :class="[item.employ ? 'hide' : 'show']" @click="handleSetCard(item)">修改</el-button>
+					<el-button
+						style="color:#67c23a"
+						:class="[item.employ ? 'hide' : 'show']"
+						type="text"
+						@click="handleUseCard(item)"
+					>使用</el-button>
 				</div>
 				<div>{{item.value}}</div>
 			</el-card>
@@ -81,6 +86,7 @@
 		title: string;
 		value: string;
 		sex: string;
+		employ: number;
 		options: Option[];
 	}
 	@Component({})
@@ -132,6 +138,7 @@
 				title: "",
 				value: "",
 				sex: "0",
+				employ: 0,
 				options: [
 					{
 						value: "0",
@@ -148,7 +155,7 @@
 					{
 						value: "3",
 						label: "中立"
-					},
+					}
 				]
 			};
 			this.dialogTitle = "";
@@ -159,9 +166,8 @@
 		}
 		// 获取所有卡片
 		getCard(sex: number = 0, use: number = 0): void {
-			console.log(sex,use)
 			this.$axios
-				.post(this.$url.getCards, { sex,employ:use })
+				.post(this.$url.getCards, { sex, employ: use })
 				.then((res: any) => {
 					this.data = res.data;
 				})
@@ -233,6 +239,20 @@
 					this.$message.error("删除卡片失败");
 				});
 		}
+		// 使用卡片
+		handleUseCard(item: Input): void {
+			const { id, employ } = item;
+			const params = { id, employ };
+			this.$axios
+				.post(this.$url.useCard, params)
+				.then((res: any) => {
+					this.$message.success(res.msg);
+					this.getCard();
+				})
+				.catch(() => {
+					this.$message.error("使用失败");
+				});
+		}
 		// 清除数据
 		clear(): void {
 			this.input.title = "";
@@ -275,6 +295,13 @@
 					}
 				}
 			}
+		}
+		// 是否显示按钮
+		.Show {
+			display: block;
+		}
+		.hide {
+			display: none;
 		}
 	}
 </style>

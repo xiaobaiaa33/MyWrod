@@ -57,4 +57,22 @@ router.post("/setCard", (req, res) => {
     })
 })
 
+// 使用卡片
+router.post("/useCard", (req, res) => {
+    let { id, employ } = req.body;
+    console.log(req.body)
+    if (employ === 0)
+        employ = 1
+    else
+        employ = 0
+    const sql = "UPDATE card SET employ = ? WHERE id = ?";
+    pool.query(sql, [employ, id], (err, result) => {
+        if (err) throw err;
+        if (result.affectedRows > 0)
+            res.send({ code: 200, msg: "使用卡片" })
+        else
+            res.send({ code: 400, msg: "使用失败" })
+    })
+})
+
 module.exports = router

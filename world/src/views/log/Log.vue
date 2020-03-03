@@ -30,6 +30,10 @@
 			this.reverse = false;
 			this.activities = [
 				{
+					content: "新增卡片模块",
+					timestamp: "2020-02-28"
+				},
+				{
 					content: "新增全局守卫",
 					timestamp: "2020-02-24"
 				},
