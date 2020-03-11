@@ -60,7 +60,6 @@ router.post("/setCard", (req, res) => {
 // 使用卡片
 router.post("/useCard", (req, res) => {
     let { id, employ } = req.body;
-    console.log(req.body)
     if (employ === 0)
         employ = 1
     else
